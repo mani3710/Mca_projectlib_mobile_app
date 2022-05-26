@@ -19,7 +19,8 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         authLoader: false,
-        dummy: "mani"
+        dummy: "mani",
+        isLoggedIn: false
     },
     reducers: {
 
