@@ -13,9 +13,9 @@ const Splash = (props) => {
     useEffect(() => {
         setTimeout(() => {
             if (isLoggedIn) {
-                props.navigation.navigate(Routes.HOME)
+                props.navigation.replace(Routes.HOME)
             } else {
-                props.navigation.navigate(Routes.LOGIN)
+                props.navigation.replace(Routes.LOGIN)
             }
         }, 1000)
     }, [])

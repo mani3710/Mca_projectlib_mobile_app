@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { MEMBERSHIP_SERVICE } from '../../api';
+import API from '../../config/api';
 
 
 
-// export const getDeliveryOptionList = createAsyncThunk(
-//     'membership/getDeliveryOptionList',
-//     async (cid) => {
-//         const result = await MEMBERSHIP_SERVICE.getDeliveryOption(cid);
-//         console.log("getMembershipList", result.data);
+export const staffSign = createAsyncThunk(
+    'auth/staffSign',
+    async (body) => {
+        console.log("body", body);
+        const result = await API.post("/staff/sign", body)
+        console.log("staffSign", result.data);
 
-//         return { result: result.data.data };
-//     }
-// );
+        return { result: result.data };
+    }
+);
 
 
 
@@ -20,23 +21,32 @@ const authSlice = createSlice({
     initialState: {
         authLoader: false,
         dummy: "mani",
-        isLoggedIn: false
+        isLoggedIn: false,
+        staffData: {},
+        staffSignInStatus: ""
+
     },
     reducers: {
 
     },
     extraReducers: (builder) => {
-        // builder.addCase(getDeliveryOptionList.pending, (state) => {
-        //     state.membershipLoader = true;
-        // });
-        // builder.addCase(getDeliveryOptionList.fulfilled, (state, action) => {
-        //     state.membershipLoader = false;
-        //     state.membershipList = action.payload.result.deliveryType;
-        //     state.customerMembership = action.payload.result.customerMembership;
-        // });
-        // builder.addCase(getDeliveryOptionList.rejected, (state) => {
-        //     state.membershipLoader = false;
-        // });
+        builder.addCase(staffSign.pending, (state) => {
+            state.authLoader = true;
+            state.staffSignInStatus = "";
+        });
+        builder.addCase(staffSign.fulfilled, (state, action) => {
+            state.authLoader = false;
+            if (action.payload.result.message == "Successfully signin") {
+                state.staffSignInStatus = "success";
+                state.staffData = action.payload.result.data;
+                state.isLoggedIn = true;
+            } else {
+                state.staffSignInStatus = "failed";
+            }
+        });
+        builder.addCase(staffSign.rejected, (state) => {
+            state.authLoader = false;
+        });
 
 
 

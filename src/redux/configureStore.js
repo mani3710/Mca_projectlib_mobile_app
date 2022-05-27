@@ -28,7 +28,7 @@ const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
     // whitelist or blacklist any reducers
-    whitelist: [],
+    whitelist: ["auth"],
     stateReconciler: autoMergeLevel2,
 };
 
