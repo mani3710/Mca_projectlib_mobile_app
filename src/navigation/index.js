@@ -4,7 +4,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
     SplashScreen,
     HomeScreen,
-    LoginScreen
+    LoginScreen,
+    StudentScreen,
+    ReviewScreen,
+    TopicListScreen
 } from './screens';
 import * as Routes from './routes';
 const Stack = createNativeStackNavigator();
@@ -28,6 +31,21 @@ export default function App() {
                         headerShown: false,
                     }}
                     name={Routes.HOME} component={HomeScreen} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_LIST} component={StudentScreen} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.REVIEW_LIST} component={ReviewScreen} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.TOPIC_LIST} component={TopicListScreen} />
 
             </Stack.Navigator>
         </NavigationContainer>
