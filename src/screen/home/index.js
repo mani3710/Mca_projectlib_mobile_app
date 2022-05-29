@@ -3,6 +3,9 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { projectListByStaff, setSelectedProject } from '../../redux/reducers/project';
 import * as Routes from '../../navigation/routes';
+import { Button } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
+import { logout } from '../../redux/reducers/auth';
 const Home = (props) => {
     const dispatch = useDispatch();
     const projectStore = useSelector(state => state.project);
@@ -39,6 +42,18 @@ const Home = (props) => {
                             <Text style={{ color: "black", fontSize: 15 }}>{item.title}</Text>
                         </TouchableOpacity>
                     )
+                }}
+            />
+            <Button
+                buttonStyle={{ backgroundColor: "#56121D" }}
+                title="LOGOUT"
+                containerStyle={{ backgroundColor: "#56121D", width: "80%", marginTop: 25, alignSelf: "center", marginBottom: 25 }}
+                onPress={async () => {
+                    // submit()
+                    await dispatch(logout());
+                    Toast.show("Logout successfully");
+                    props.navigation.replace(Routes.LOGIN);
+
                 }}
             />
         </View >

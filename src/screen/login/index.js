@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import IMAGES from '../../assest/images';
 import * as Routes from '../../navigation/routes';
 import { Button } from 'react-native-elements';
-import { staffSign } from '../../redux/reducers/auth';
+import { staffSign, emptySignInResult } from '../../redux/reducers/auth';
 
 const Login = (props) => {
     const dispatch = useDispatch();
@@ -19,9 +19,11 @@ const Login = (props) => {
     const [signError, setSignError] = useState("");
     useEffect(() => {
         if (staffSignInStatus == "success") {
+            dispatch(emptySignInResult())
             setSignError("Success");
             props.navigation.replace(Routes.HOME);
         } else if (staffSignInStatus == "failed") {
+            dispatch(emptySignInResult())
             setSignError("Staff id/password is incorrect");
         }
     }, [staffSignInStatus])

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../config/api';
 
-
+import Toast from 'react-native-simple-toast';
 
 export const projectListByStaff = createAsyncThunk(
     'project/projectListByStaff',
@@ -47,6 +47,17 @@ export const getReviewTopicList = createAsyncThunk(
 );
 
 
+export const updateMark = createAsyncThunk(
+    'project/updateMark',
+    async (body) => {
+        console.log("body", body);
+        const result = await API.post("/review/create/marks", body)
+        console.log("updateMark", result.data);
+
+        return { result: result.data };
+    }
+);
+
 
 const projectSlice = createSlice({
     name: 'project',
@@ -62,7 +73,8 @@ const projectSlice = createSlice({
         reviewList: [],
         selectedStundent: {},
         selectedReview: {},
-        topicList: []
+        topicList: [],
+        markuploadStatus: ""
     },
     reducers: {
         setSelectedProject: (state, action) => {
@@ -76,6 +88,9 @@ const projectSlice = createSlice({
         },
         updateReviewMark: (state, action) => {
             state.topicList[action.payload.index].mark = action.payload.mark;
+        },
+        removeMarUploadStatus: (state, action) => {
+            state.markuploadStatus = "";
         }
     },
     extraReducers: (builder) => {
@@ -140,13 +155,33 @@ const projectSlice = createSlice({
                 state.topicList = newArrayObj;
             }
         });
+
         builder.addCase(getReviewTopicList.rejected, (state) => {
             state.projectLoader = false;
+        });
+
+        builder.addCase(updateMark.pending, (state) => {
+            state.projectLoader = true;
+            state.markuploadStatus = "";
+
+        });
+        builder.addCase(updateMark.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                console.log("action", action.payload)
+                state.markuploadStatus = "success"
+            } else {
+                state.markuploadStatus = "failed"
+            }
+        });
+        builder.addCase(updateMark.rejected, (state, action) => {
+            state.projectLoader = false;
+            state.markuploadStatus = "failed"
         });
 
 
 
     }
 });
-export const { setSelectedProject, setSelectedStundent, setSelectedReview, updateReviewMark } = projectSlice.actions;
+export const { setSelectedProject, setSelectedStundent, setSelectedReview, updateReviewMark, removeMarUploadStatus } = projectSlice.actions;
 export default projectSlice.reducer;

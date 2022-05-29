@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { getStudentDataListByStaffAndBatch, getProjectReviewList, getReviewTopicList, updateReviewMark } from '../../redux/reducers/project';
+import { getStudentDataListByStaffAndBatch, getProjectReviewList, getReviewTopicList, updateReviewMark, updateMark, removeMarUploadStatus } from '../../redux/reducers/project';
 import * as Routes from '../../navigation/routes';
 import { Button } from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
+import uuid from 'react-native-uuid';
 const TopicList = (props) => {
     const dispatch = useDispatch();
     const projectStore = useSelector(state => state.project);
@@ -18,7 +19,8 @@ const TopicList = (props) => {
         reviewList,
         selectedStundent,
         topicList,
-        selectedReview
+        selectedReview,
+        markuploadStatus
     } = projectStore;
 
     const {
@@ -29,9 +31,38 @@ const TopicList = (props) => {
     useEffect(() => {
         getReviewTopicListFun();
     }, [])
+    useEffect(() => {
+        if (markuploadStatus == "success") {
+            dispatch(removeMarUploadStatus());
+            Toast.show("Uploaded successfully!");
+            props.navigation.goBack();
+        } else if (markuploadStatus == "failed") {
+            dispatch(removeMarUploadStatus());
+            Toast.show("Already mark update");
+        }
+    }, [markuploadStatus])
     const getReviewTopicListFun = () => {
         console.log("selectedReview", selectedReview);
         dispatch(getReviewTopicList(selectedReview.uuid));
+    }
+    const sendMarkToDataBase = () => {
+        let objArray = [];
+        console.table(objArray)
+        for (let obj of topicList) {
+            objArray.push({
+                "uuid": uuid.v1(),
+                "studentid": selectedStundent.uuid,
+                "staffid": staffData.uuid,
+                "topicid": obj.uuid,
+                "reviewid": selectedReview.uuid,
+                "batchid": selectedBatchData.uuid,
+                "mark": obj.mark,
+                "name": selectedStundent.username,
+                "rollno": selectedStundent.rollno
+            })
+        }
+        console.log(objArray)
+        dispatch(updateMark({ reviewMarkList: objArray }));
     }
     const submit = () => {
         let flag = true;
@@ -44,6 +75,8 @@ const TopicList = (props) => {
         if (!flag) {
             Toast.show("Empty Field Found !");
             return;
+        } else {
+            sendMarkToDataBase()
         }
 
     }
