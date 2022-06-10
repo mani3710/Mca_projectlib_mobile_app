@@ -5,6 +5,10 @@ import StudentScreen from '../screen/studentList';
 import ReviewScreen from '../screen/reviewList';
 import TopicListScreen from '../screen/topicList';
 import ProjectScreen from '../screen/project';
+import StudentProject from '../screen/studentProject';
+import StudentProjectReview from '../screen/studentProject/review';
+import StudentProjectReviewMark from '../screen/studentProject/reviewMark';
+import StudentProjectUpload from '../screen/studentProject/uploadProject';
 export {
     SplashScreen,
     HomeScreen,
@@ -12,5 +16,9 @@ export {
     StudentScreen,
     ReviewScreen,
     TopicListScreen,
-    ProjectScreen
+    ProjectScreen,
+    StudentProject,
+    StudentProjectReview,
+    StudentProjectReviewMark,
+    StudentProjectUpload
 }      

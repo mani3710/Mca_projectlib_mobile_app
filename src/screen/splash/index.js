@@ -7,13 +7,19 @@ const Splash = (props) => {
 
     const authStore = useSelector(state => state.auth);
     const {
-        isLoggedIn
+        isLoggedIn,
+        isStudentSign
     } = authStore;
 
     useEffect(() => {
         setTimeout(() => {
             if (isLoggedIn) {
-                props.navigation.replace(Routes.MAIN_BOTTOM_NAV)
+                if (isStudentSign) {
+                    props.navigation.replace(Routes.STUDENT_BOTTOM_NAV)
+                } else {
+                    props.navigation.replace(Routes.MAIN_BOTTOM_NAV)
+                }
+
             } else {
                 props.navigation.replace(Routes.LOGIN)
             }

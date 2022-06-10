@@ -52,8 +52,6 @@ export const updateMark = createAsyncThunk(
     async (body) => {
         console.log("body", body);
         const result = await API.post("/review/create/marks", body)
-        console.log("updateMark", result.data);
-
         return { result: result.data };
     }
 );

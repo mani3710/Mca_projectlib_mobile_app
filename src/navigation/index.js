@@ -10,7 +10,11 @@ import {
     StudentScreen,
     ReviewScreen,
     TopicListScreen,
-    ProjectScreen
+    ProjectScreen,
+    StudentProject,
+    StudentProjectReview,
+    StudentProjectReviewMark,
+    StudentProjectUpload
 } from './screens';
 import { Icon } from 'react-native-elements';
 //import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -35,6 +39,55 @@ const Tab = createBottomTabNavigator();
 
 //     );
 // };
+
+
+const StudentMainBottomNav = () => {
+    return (
+        <Tab.Navigator
+            tabBarOptions={{
+                style: {
+
+                    backgroundColor: "#fff",
+                    elevation: 20,
+                    // height: Mixins.verticalScaleSize(60),
+                },
+                activeTintColor: "#56121D",
+                labelStyle: {
+                    fontSize: 8,
+                    color: "#000",
+                    marginBottom: 10,
+                    fontWeight: '700',
+
+
+                }
+
+            }}>
+            <Tab.Screen
+                options={{
+                    headerShown: false,
+                    tabBarLabel: "Home",
+                    tabBarIcon: ({ color, size }) => (
+                        <Image style={{ width: 20, height: 20 }} source={IMAGES.homeIcon} />
+                    ),
+
+                }}
+                name={Routes.PROJECT_SCREEN} component={ProjectScreen}
+            />
+            <Tab.Screen
+                options={{
+                    headerShown: false,
+                    tabBarLabel: "Student Profile",
+                    tabBarIcon: ({ color, size }) => (
+                        <Image style={{ width: 20, height: 20 }} source={IMAGES.personIcon} />
+                    ),
+
+                }}
+                name={Routes.STUDENT_PROJECT} component={StudentProject}
+            />
+        </Tab.Navigator>
+
+    );
+};
 const MainBottomNav = () => {
     return (
         <Tab.Navigator
@@ -70,7 +123,7 @@ const MainBottomNav = () => {
             <Tab.Screen
                 options={{
                     headerShown: false,
-                    tabBarLabel: "Profile",
+                    tabBarLabel: "Staff Profile",
                     tabBarIcon: ({ color, size }) => (
                         <Image style={{ width: 20, height: 20 }} source={IMAGES.personIcon} />
                     ),
@@ -78,24 +131,6 @@ const MainBottomNav = () => {
                 }}
                 name={Routes.HOME} component={HomeScreen}
             />
-
-
-            {/* <Tab.Screen
-                options={{
-                    tabBarLabel: "Cart",
-                    tabBarIcon: ({ color, size }) => (
-                        <Icon
-                            name="cart-outline"
-                            color={color}
-                            type='ionicon'
-                            size={20}
-                        />
-                    ),
-                }}
-                name={Routes.CART_SCREEN}
-                component={Cart}
-            /> */}
-
         </Tab.Navigator>
 
     );
@@ -140,6 +175,28 @@ export default function App() {
                         headerShown: false,
                     }}
                     name={Routes.TOPIC_LIST} component={TopicListScreen} />
+
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_BOTTOM_NAV} component={StudentMainBottomNav} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_PROJECT_REVIEW} component={StudentProjectReview} />
+
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_PROJECT_REVIEW_MARK} component={StudentProjectReviewMark} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_PROJECT_UPLOAD} component={StudentProjectUpload} />
 
             </Stack.Navigator>
         </NavigationContainer>

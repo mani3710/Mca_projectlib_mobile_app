@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import IMAGES from '../../assest/images';
 import * as Routes from '../../navigation/routes';
 import { Button } from 'react-native-elements';
-import { staffSign, emptySignInResult } from '../../redux/reducers/auth';
+import { staffSign, emptySignInResult, emptyStudentSignInStatus, studentSign, setIsStudentSign } from '../../redux/reducers/auth';
 
 const Login = (props) => {
     const dispatch = useDispatch();
@@ -12,7 +12,8 @@ const Login = (props) => {
     const {
         isLoggedIn,
         staffData,
-        staffSignInStatus
+        staffSignInStatus,
+        studentSignInStatus
     } = authStore;
     const [staffID, setStaffID] = useState("");
     const [password, setPassword] = useState("");
@@ -26,6 +27,7 @@ const Login = (props) => {
     useEffect(() => {
         if (staffSignInStatus == "success") {
             dispatch(emptySignInResult())
+            dispatch(setIsStudentSign(false))
             setSignError("Success");
             props.navigation.replace(Routes.MAIN_BOTTOM_NAV);
         } else if (staffSignInStatus == "failed") {
@@ -33,12 +35,36 @@ const Login = (props) => {
             setSignError("Staff id/password is incorrect");
         }
     }, [staffSignInStatus])
+
+    useEffect(() => {
+
+        if (studentSignInStatus == "success") {
+            dispatch(emptyStudentSignInStatus())
+            dispatch(setIsStudentSign(true))
+            setStudentSignError("Success");
+            props.navigation.replace(Routes.STUDENT_BOTTOM_NAV);
+        } else if (studentSignInStatus == "failed") {
+            dispatch(emptyStudentSignInStatus())
+            setStudentSignError("Student id/password is incorrect");
+        }
+    }, [studentSignInStatus])
+
     const staffSignFunc = () => {
         if (staffID && password) {
             setSignError("")
             dispatch(staffSign({ staffid: staffID, password: password }));
         } else {
             setSignError("Empty field found")
+        }
+    }
+
+    const studentSignFunc = () => {
+        console.log("student")
+        if (rollno && studentPassword) {
+            setStudentSignError("")
+            dispatch(studentSign({ password: studentPassword, rollno: rollno }));
+        } else {
+            setStudentSignError("Empty field found student")
         }
     }
     return (
@@ -72,62 +98,76 @@ const Login = (props) => {
                         }}
                     />
                 </View>
-                {!selectedStudent ? <View
-                    style={{ width: "80%", marginTop: 20 }}
-                >
-                    <Text style={{ opacity: 0.6, fontSize: 12, color: "#000" }}>Staff ID</Text>
-                    <TextInput
-                        value={staffID}
-                        placeholder="Please enter staff id"
-                        placeholderTextColor="gray"
-                        onChangeText={(text) => {
-                            setStaffID(text)
-                        }}
-                        style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
-                    />
-                    <Text style={{ opacity: 0.6, fontSize: 12, color: "#000", marginTop: 20 }}>Password</Text>
-                    <TextInput
-                        value={password}
-                        placeholder="Please enter password"
-                        placeholderTextColor="gray"
-                        onChangeText={(text) => {
-                            setPassword(text)
-                        }}
-                        style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
-                    />
-                </View>
+                {!selectedStudent ?
+                    <>
+                        <View
+                            style={{ width: "80%", marginTop: 20 }}
+                        >
+                            <Text style={{ opacity: 0.6, fontSize: 12, color: "#000" }}>Staff ID</Text>
+                            <TextInput
+                                value={staffID}
+                                placeholder="Please enter staff id"
+                                placeholderTextColor="gray"
+                                onChangeText={(text) => {
+                                    setStaffID(text)
+                                }}
+                                style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
+                            />
+                            <Text style={{ opacity: 0.6, fontSize: 12, color: "#000", marginTop: 20 }}>Password</Text>
+                            <TextInput
+                                value={password}
+                                placeholder="Please enter password"
+                                placeholderTextColor="gray"
+                                onChangeText={(text) => {
+                                    setPassword(text)
+                                }}
+                                style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
+                            />
+                        </View>
+                        <Text style={{ color: "red" }}>{signError}</Text>
+                    </>
                     :
-                    <View
-                        style={{ width: "80%", marginTop: 20 }}
-                    >
-                        <Text style={{ opacity: 0.6, fontSize: 12, color: "#000" }}>Roll no</Text>
-                        <TextInput
-                            value={rollno}
-                            placeholder="Please enter roll number"
-                            placeholderTextColor="gray"
-                            onChangeText={(text) => {
-                                setRollno(text)
-                            }}
-                            style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
-                        />
-                        <Text style={{ opacity: 0.6, fontSize: 12, color: "#000", marginTop: 20 }}>Password</Text>
-                        <TextInput
-                            value={studentPassword}
-                            placeholder="Please enter password"
-                            placeholderTextColor="gray"
-                            onChangeText={(text) => {
-                                setStudentPassword(text)
-                            }}
-                            style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
-                        />
-                    </View>}
-                <Text style={{ color: "red" }}>{signError}</Text>
+                    <>
+                        <View
+                            style={{ width: "80%", marginTop: 20 }}
+                        >
+                            <Text style={{ opacity: 0.6, fontSize: 12, color: "#000" }}>Roll no</Text>
+                            <TextInput
+                                value={rollno}
+                                placeholder="Please enter roll number"
+                                placeholderTextColor="gray"
+                                onChangeText={(text) => {
+                                    setRollno(text)
+                                }}
+                                style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
+                            />
+                            <Text style={{ opacity: 0.6, fontSize: 12, color: "#000", marginTop: 20 }}>Password</Text>
+                            <TextInput
+                                value={studentPassword}
+                                placeholder="Please enter password"
+                                placeholderTextColor="gray"
+                                onChangeText={(text) => {
+                                    setStudentPassword(text)
+                                }}
+                                style={{ borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", marginTop: 12, color: "#000" }}
+                            />
+                        </View>
+                        <Text style={{ color: "red" }}>{studentSignError}</Text>
+                    </>
+                }
+
                 <Button
                     buttonStyle={{ backgroundColor: "#56121D" }}
                     title="LOGIN"
                     containerStyle={{ backgroundColor: "#56121D", width: "80%", marginTop: 25 }}
                     onPress={() => {
-                        staffSignFunc()
+                        if (selectedStudent) {
+
+                            studentSignFunc()
+                        } else {
+                            staffSignFunc()
+                        }
+
                     }}
                 />
                 <View style={{ height: 50 }} />

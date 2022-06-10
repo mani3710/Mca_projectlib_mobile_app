@@ -15,6 +15,17 @@ export const staffSign = createAsyncThunk(
 );
 
 
+export const studentSign = createAsyncThunk(
+    'auth/studentSign',
+    async (body) => {
+        console.log("body", body);
+        const result = await API.post("/student/sign", body)
+        console.log("studentSign", result.data); studentSign
+        return { result: result.data };
+    }
+);
+
+
 
 const authSlice = createSlice({
     name: 'auth',
@@ -23,7 +34,10 @@ const authSlice = createSlice({
         dummy: "mani",
         isLoggedIn: false,
         staffData: {},
-        staffSignInStatus: ""
+        staffSignInStatus: "",
+        studentSignInStatus: "",
+        studentData: {},
+        isStudentSign: false
 
     },
     reducers: {
@@ -32,6 +46,12 @@ const authSlice = createSlice({
         },
         emptySignInResult: (state, action) => {
             state.staffSignInStatus = "";
+        },
+        emptyStudentSignInStatus: (state, action) => {
+            state.studentSignInStatus = "";
+        },
+        setIsStudentSign: (state, action) => {
+            state.isStudentSign = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -53,10 +73,27 @@ const authSlice = createSlice({
             state.authLoader = false;
         });
 
+        builder.addCase(studentSign.pending, (state) => {
+            state.authLoader = true;
+            state.staffSignInStatus = "";
+        });
+        builder.addCase(studentSign.fulfilled, (state, action) => {
+            state.authLoader = false;
+            if (action.payload.result.message == "Successfully signin") {
+                state.studentSignInStatus = "success";
+                state.studentData = action.payload.result.data;
+                state.isLoggedIn = true;
+            } else {
+                state.studentSignInStatus = "failed";
+            }
+        });
+        builder.addCase(studentSign.rejected, (state) => {
+            state.authLoader = false;
+        });
 
 
 
     }
 });
-export const { logout, emptySignInResult } = authSlice.actions;
+export const { logout, emptySignInResult, emptyStudentSignInStatus, setIsStudentSign } = authSlice.actions;
 export default authSlice.reducer;
