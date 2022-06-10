@@ -24,11 +24,20 @@ export const getStudentProjectReviewList = createAsyncThunk(
 export const getStudentProjectReviewMark = createAsyncThunk(
     'student/getStudentProjectReviewMark',
     async (data) => {
-        console.log("data", `/student/get/project/review/mark?reviewid=${data.reviewid}&studentid=${data.studentid}`)
-        console.log("data", `/student/get/project/review/mark?reviewid=e9510ef2-7786-4013-ba7b-e355d4c4bc30&studentid=9ec63154-c37c-11ec-9d64-0242ac120002`)
+
         const result = await API.get(`/student/get/project/review/mark?reviewid=${data.reviewid}&studentid=${data.studentid}`)
         //  const result = await API.get(`/student/get/project/review/mark?reviewid=e9510ef2-7786-4013-ba7b-e355d4c4bc30&studentid=9ec63154-c37c-11ec-9d64-0242ac120002`)
         console.log("getStudentProjectReviewMark", result.data)
+        return { result: result.data };
+    }
+);
+
+
+export const insertStudentProjectData = createAsyncThunk(
+    'student/insertStudentProjectData',
+    async (body) => {
+
+        const result = await API.post(`/student/insert/project`, body)
         return { result: result.data };
     }
 );
@@ -45,7 +54,9 @@ const studentSlice = createSlice({
             topicArray: [],
             markArray: []
         },
-        selectedReview: {}
+        selectedReview: {},
+        projectUploadStatus: ""
+
 
     },
     reducers: {
@@ -54,6 +65,9 @@ const studentSlice = createSlice({
         },
         setSelectedReview: (state, action) => {
             state.selectedReview = action.payload;
+        },
+        emptyProjectUploadStatus: (state, action) => {
+            state.projectUploadStatus = "";
         }
     },
     extraReducers: (builder) => {
@@ -97,7 +111,24 @@ const studentSlice = createSlice({
             state.studentLoader = false;
         });
 
+        builder.addCase(insertStudentProjectData.pending, (state) => {
+            state.studentLoader = true;
+            state.projectUploadStatus = "";
+        });
+        builder.addCase(insertStudentProjectData.fulfilled, (state, action) => {
+            state.studentLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectUploadStatus = "success";
+            } else {
+                state.projectUploadStatus = "failed";
+            }
+        });
+        builder.addCase(insertStudentProjectData.rejected, (state) => {
+            state.studentLoader = false;
+            state.projectUploadStatus = "failed";
+        });
+
     }
 });
-export const { setSelectedProjectData, setSelectedReview } = studentSlice.actions;
+export const { setSelectedProjectData, setSelectedReview, emptyProjectUploadStatus } = studentSlice.actions;
 export default studentSlice.reducer;
