@@ -11,3 +11,4 @@ export const STUDENT_PROJECT = "studentproject";
 export const STUDENT_PROJECT_REVIEW = "studentprojectreview";
 export const STUDENT_PROJECT_REVIEW_MARK = "studentprojectreviewmark";
 export const STUDENT_PROJECT_UPLOAD = "studentprojectupload";
+export const STUDENT_PROJECT_DETAILS = "studentprojectdetails";

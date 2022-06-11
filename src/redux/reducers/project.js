@@ -56,6 +56,25 @@ export const updateMark = createAsyncThunk(
     }
 );
 
+export const getProjectFeedList = createAsyncThunk(
+    'project/getProjectFeedList',
+    async () => {
+
+        const result = await API.get(`/project/get/feed`)
+        console.log("getReviewTopicList", result.data);
+        return { result: result.data };
+    }
+);
+
+export const getProjectDetailsFeed = createAsyncThunk(
+    'project/getProjectDetailsFeed',
+    async (data) => {
+
+        const result = await API.get(`/project/get/details?projectid=${data.projectid}&studentid=${data.studentid}`)
+        console.log("getReviewTopicList", result.data);
+        return { result: result.data };
+    }
+);
 
 const projectSlice = createSlice({
     name: 'project',
@@ -72,7 +91,11 @@ const projectSlice = createSlice({
         selectedStundent: {},
         selectedReview: {},
         topicList: [],
-        markuploadStatus: ""
+        markuploadStatus: "",
+        projectListForFeed: [],
+        selectedProjectForFeedMore: {
+        },
+        feedProjectDetailsList: []
     },
     reducers: {
         setSelectedProject: (state, action) => {
@@ -89,6 +112,9 @@ const projectSlice = createSlice({
         },
         removeMarUploadStatus: (state, action) => {
             state.markuploadStatus = "";
+        },
+        setSelectedProjectForFeedMore: (state, action) => {
+            state.selectedProjectForFeedMore = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -177,9 +203,34 @@ const projectSlice = createSlice({
             state.markuploadStatus = "failed"
         });
 
+        builder.addCase(getProjectFeedList.pending, (state) => {
+            state.projectLoader = true;
 
+        });
+        builder.addCase(getProjectFeedList.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectListForFeed = action.payload.result.data;
+            }
+        });
+        builder.addCase(getProjectFeedList.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
 
+        builder.addCase(getProjectDetailsFeed.pending, (state) => {
+            state.projectLoader = true;
+
+        });
+        builder.addCase(getProjectDetailsFeed.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.feedProjectDetailsList = action.payload.result.data;
+            }
+        });
+        builder.addCase(getProjectDetailsFeed.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
     }
 });
-export const { setSelectedProject, setSelectedStundent, setSelectedReview, updateReviewMark, removeMarUploadStatus } = projectSlice.actions;
+export const { setSelectedProject, setSelectedStundent, setSelectedReview, updateReviewMark, removeMarUploadStatus, setSelectedProjectForFeedMore } = projectSlice.actions;
 export default projectSlice.reducer;

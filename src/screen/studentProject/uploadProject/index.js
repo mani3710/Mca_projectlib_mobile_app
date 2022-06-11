@@ -103,7 +103,7 @@ const UploadProject = (props) => {
                 projectArray.push(innerObj);
 
             }
-
+            let today = new Date()
             let body = {
                 arrayOfProjectInfo: projectArray,
                 uuid: uuid.v1(),
@@ -112,7 +112,8 @@ const UploadProject = (props) => {
                 title: projectTitle,
                 domain: domain,
                 abstract: projectAdracts,
-                year: new Date().getFullYear()
+                year: new Date().getFullYear(),
+                adddate: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
             }
             console.log(body);
             dispatch(insertStudentProjectData(body));
@@ -191,8 +192,6 @@ const UploadProject = (props) => {
                                         <Dropdown
                                             selectedTextStyle={{ color: "#fff", fontSize: 15 }}
                                             value={""}
-
-
                                             data={data}
                                             style={{
                                                 width: item.option == "Heading" ? "100%" : "85%", height: 40, backgroundColor: "gray",

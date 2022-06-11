@@ -14,7 +14,8 @@ import {
     StudentProject,
     StudentProjectReview,
     StudentProjectReviewMark,
-    StudentProjectUpload
+    StudentProjectUpload,
+    StudentProjectDetails
 } from './screens';
 import { Icon } from 'react-native-elements';
 //import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -197,6 +198,11 @@ export default function App() {
                         headerShown: false,
                     }}
                     name={Routes.STUDENT_PROJECT_UPLOAD} component={StudentProjectUpload} />
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                    }}
+                    name={Routes.STUDENT_PROJECT_DETAILS} component={StudentProjectDetails} />
 
             </Stack.Navigator>
         </NavigationContainer>

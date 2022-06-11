@@ -9,6 +9,7 @@ import StudentProject from '../screen/studentProject';
 import StudentProjectReview from '../screen/studentProject/review';
 import StudentProjectReviewMark from '../screen/studentProject/reviewMark';
 import StudentProjectUpload from '../screen/studentProject/uploadProject';
+import StudentProjectDetails from '../screen/projectDetails';
 export {
     SplashScreen,
     HomeScreen,
@@ -20,5 +21,6 @@ export {
     StudentProject,
     StudentProjectReview,
     StudentProjectReviewMark,
-    StudentProjectUpload
+    StudentProjectUpload,
+    StudentProjectDetails
 }      
