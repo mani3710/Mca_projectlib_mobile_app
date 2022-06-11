@@ -7,16 +7,15 @@ import { SearchBar } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-simple-toast';
 import uuid from 'react-native-uuid';
-import { getProjectFeedList, setSelectedProjectForFeedMore } from '../../redux/reducers/project';
-const data = [
-    { label: 'Title', value: 'Title' },
-    { label: 'Domain', value: 'Domain' },
-    { label: 'Year', value: 'Year' }
-];
+import SelectDropdown from 'react-native-select-dropdown'
+import { getProjectFeedList, setSelectedProjectForFeedMore, projectSearchByTitle, projectSearchByDomain, projectSearchByYear } from '../../redux/reducers/project';
+
+const data = ["Title", "Domain", "Year"]
 const ProjectList = (props) => {
     const dispatch = useDispatch();
     const [searchText, setSearchText] = useState("");
-    const [selectedSearchType, setSelectedSearchType] = useState({ label: 'Text', value: 'Text' });
+    const [selectedSearchType, setSelectedSearchType] = useState("Title");
+    const [refreshing, setRefreshing] = useState(false);
     const projectStore = useSelector(state => state.project);
 
     const {
@@ -28,6 +27,23 @@ const ProjectList = (props) => {
     const getProjectFeedListFunc = () => {
         dispatch(getProjectFeedList());
     }
+    const search = () => {
+        if (selectedSearchType == "Title") {
+            let lowercase = searchText.toLowerCase()
+            dispatch(projectSearchByTitle(lowercase))
+        } else if (selectedSearchType == "Domain") {
+            let lowercase = searchText.toLowerCase()
+            dispatch(projectSearchByDomain(lowercase))
+        } else {
+
+            if (searchText.length == 4) {
+                dispatch(projectSearchByYear(searchText))
+            } else {
+                Toast.show("Year must have 4 numbers")
+            }
+        }
+
+    }
     return (
         <View style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}>
 
@@ -35,11 +51,16 @@ const ProjectList = (props) => {
                 value={searchText}
                 placeholder="Search the project"
                 placeholderTextColor="gray"
-                multiline={true}
+                multiline={false}
                 autoCapitalize
                 onChangeText={(text) => {
                     setSearchText(text)
                 }}
+                onSubmitEditing={() => {
+                    search();
+                }}
+                maxLength={selectedSearchType == "Year" ? 4 : 5000}
+                keyboardType={selectedSearchType == "Year" ? "number-pad" : "default"}
                 style={{
                     borderWidth: 1,
                     borderColor: "transparent",
@@ -50,10 +71,27 @@ const ProjectList = (props) => {
                     textAlign: "center"
                 }}
             />
-            <Dropdown
-                selectedTextStyle={{ color: "red", fontSize: 15, fontWeight: "bold" }}
+            <SelectDropdown
+                defaultValue={"Title"}
+                data={data}
+                onSelect={(selectedItem, index) => {
+                    setSelectedSearchType(selectedItem)
+                    // console.log(selectedItem, index)
+                }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                    return selectedItem
+                }}
+                rowTextForSelection={(item, index) => {
+                    return item
+                }}
+                buttonStyle={{ width: "90%", marginTop: 20 }}
+            />
+            {/* <Dropdown
+                // selectedTextStyle={{ color: "red", fontSize: 15, fontWeight: "bold" }}
                 value={selectedSearchType}
                 data={data}
+                showsVerticalScrollIndicator
+
                 style={{
                     width: "90%", height: 40, backgroundColor: "gray",
                     paddingLeft: 10, marginTop: 10,
@@ -72,8 +110,21 @@ const ProjectList = (props) => {
                     );
                 }}
 
-            />
+            /> */}
             <FlatList
+                refreshing={refreshing}
+                onRefresh={() => {
+                    setSearchText("");
+                    setSelectedSearchType("Title")
+                    getProjectFeedListFunc()
+                }}
+                ListEmptyComponent={() => {
+                    return (
+                        <View >
+                            <Text style={{ color: "#000", paddingTop: 10, fontWeight: "bold", fontSize: 15, lineHeight: 24, textAlign: "center", marginTop: 25 }}>Project not found!</Text>
+                        </View>
+                    );
+                }}
                 style={{ flex: 1, width: "90%" }}
                 data={projectListForFeed}
                 renderItem={({ item, index }) => {

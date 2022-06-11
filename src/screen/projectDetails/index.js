@@ -8,12 +8,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-simple-toast';
 import uuid from 'react-native-uuid';
 import ImageView from "react-native-image-viewing";
-import { getProjectFeedList, getProjectDetailsFeed } from '../../redux/reducers/project';
-const data = [
-    { label: 'Title', value: 'Title' },
-    { label: 'Domain', value: 'Domain' },
-    { label: 'Year', value: 'Year' }
-];
+import { getProjectFeedList, getProjectDetailsFeed, getProjectStudentDetails } from '../../redux/reducers/project';
+
 const ProjectDetails = (props) => {
     const dispatch = useDispatch();
     const [searchText, setSearchText] = useState("");
@@ -25,11 +21,16 @@ const ProjectDetails = (props) => {
     const {
         projectListForFeed,
         selectedProjectForFeedMore,
-        feedProjectDetailsList
+        feedProjectDetailsList,
+        projectStudentDetails
     } = projectStore;
     useEffect(() => {
         getProjectDetailsFeedFunc();
+        getProjectStudentDetailsFunc();
     }, []);
+    const getProjectStudentDetailsFunc = () => {
+        dispatch(getProjectStudentDetails(selectedProjectForFeedMore.studentid));
+    }
     const handleClick = (url) => {
         Linking
             .openURL(`${url}`)
@@ -96,6 +97,11 @@ const ProjectDetails = (props) => {
             <Text style={{ color: "#000", paddingTop: 10, fontWeight: "bold", fontSize: 18, marginTop: 20 }}>{selectedProjectForFeedMore.title}</Text>
             <Text style={{ color: "#E0E0E0", fontSize: 11 }}>{selectedProjectForFeedMore.adddate}</Text>
             <Text style={{ color: "gray", fontSize: 11 }}>{selectedProjectForFeedMore.domain}</Text>
+            <View style={{ marginTop: 10 }}>
+                <Text style={{ color: "#E0E0E0", fontSize: 11 }}>By</Text>
+                <Text style={{ color: "#000", fontSize: 20, fontWeight: "bold" }}>{projectStudentDetails.username}</Text>
+                <Text style={{ color: "gray", fontSize: 13 }}>Roll no : {projectStudentDetails.rollno}</Text>
+            </View>
             <Text style={{ color: "#000", paddingTop: 10, fontWeight: "bold", fontSize: 18 }}>Abstract</Text>
             <Text style={{ color: "gray", fontSize: 13, marginTop: 10, lineHeight: 24, textAlign: "justify" }} >{selectedProjectForFeedMore.abstract}</Text>
 
@@ -140,7 +146,9 @@ const ProjectDetails = (props) => {
 
                 }}
             />
-            <View style={{ width: "100%", height: 50 }}></View>
+
+
+            <View style={{ width: "100%", height: 80 }}></View>
             <ImageView
                 images={zoomImage}
                 imageIndex={0}

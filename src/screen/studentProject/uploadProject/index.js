@@ -8,11 +8,8 @@ import { Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-simple-toast';
 import uuid from 'react-native-uuid';
-const data = [
-    { label: 'Text', value: 'Text' },
-    { label: 'Image/Url', value: 'Image/Url' },
-    { label: 'Url', value: 'Url' },
-];
+import SelectDropdown from 'react-native-select-dropdown'
+const data = ['Text', 'Image/Url', 'Url'];
 const UploadProject = (props) => {
     const dispatch = useDispatch();
     const studentStore = useSelector(state => state.student);
@@ -182,14 +179,31 @@ const UploadProject = (props) => {
                                             }}
                                             multiline={true}
                                             style={{
-                                                borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", color: "#000", width: "85%", marginTop: -15, marginLeft: 10,
+                                                borderWidth: 1, borderColor: "transparent", borderRadius: 10, borderBottomColor: "#A9A9A9", color: "#000", width: item.option == "Heading" ? "95%" : "85%", marginTop: -15, marginLeft: 10,
                                                 fontWeight: item.option == "Heading" ? "bold" : "500",
                                                 alignSelf: item.option == "Heading" ? "flex-start" : "flex-end"
                                             }}
                                         />
+                                        <SelectDropdown
+                                            defaultValue={"Text"}
+                                            data={data}
+                                            onSelect={(selectedItem) => {
 
+                                                let objArr = [...topicDataList];
+                                                objArr[index].type = selectedItem;
+                                                setTopicDataList(objArr);
 
-                                        <Dropdown
+                                            }}
+                                            buttonTextAfterSelection={(selectedItem, index) => {
+                                                return selectedItem
+                                            }}
+                                            rowTextForSelection={(item, index) => {
+                                                return item
+                                            }}
+                                            buttonStyle={{ width: item.option == "Heading" ? "100%" : "85%", marginTop: 20, alignSelf: item.option == "Heading" ? "flex-start" : "flex-end" }}
+                                        />
+
+                                        {/* <Dropdown
                                             selectedTextStyle={{ color: "#fff", fontSize: 15 }}
                                             value={""}
                                             data={data}
@@ -213,7 +227,7 @@ const UploadProject = (props) => {
                                                 );
                                             }}
 
-                                        />
+                                        /> */}
                                         <TextInput
                                             value={item.data}
                                             autoCapitalize

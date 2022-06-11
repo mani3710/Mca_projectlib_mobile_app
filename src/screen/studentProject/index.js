@@ -46,10 +46,9 @@ const StudentProject = (props) => {
                 title="LOGOUT"
                 containerStyle={{ backgroundColor: "#56121D", width: "80%", marginTop: 25, alignSelf: "center", marginBottom: 25 }}
                 onPress={async () => {
-                    // submit()
-                    // await dispatch(logout());
-                    // Toast.show("Logout successfully");
-                    // props.navigation.replace(Routes.LOGIN);
+                    await dispatch(logout());
+                    Toast.show("Logout successfully");
+                    props.navigation.replace(Routes.LOGIN);
 
                 }}
             />

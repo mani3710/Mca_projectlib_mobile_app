@@ -76,6 +76,46 @@ export const getProjectDetailsFeed = createAsyncThunk(
     }
 );
 
+export const projectSearchByTitle = createAsyncThunk(
+    'project/projectSearchByTitle',
+    async (text) => {
+
+        const result = await API.get(`/project/search/bytitle?text=${text}`)
+        console.log("projectSearchByTitle", result.data);
+        return { result: result.data };
+    }
+);
+
+export const projectSearchByDomain = createAsyncThunk(
+    'project/projectSearchByDomain',
+    async (text) => {
+
+        const result = await API.get(`/project/search/bydomain?text=${text}`)
+        console.log("projectSearchByDomain", result.data);
+        return { result: result.data };
+    }
+);
+
+export const projectSearchByYear = createAsyncThunk(
+    'project/projectSearchByYear',
+    async (text) => {
+        console.log(text)
+        const result = await API.get(`/project/search/byyear?text=${text}`)
+        console.log("projectSearchByYear", result.data);
+        return { result: result.data };
+    }
+);
+
+export const getProjectStudentDetails = createAsyncThunk(
+    'project/getProjectStudentDetails',
+    async (studentid) => {
+
+        const result = await API.get(`/student/get/details?studentid=${studentid}`)
+        console.log("getProjectStudentDetails", result.data);
+        return { result: result.data };
+    }
+);
+
 const projectSlice = createSlice({
     name: 'project',
     initialState: {
@@ -95,7 +135,14 @@ const projectSlice = createSlice({
         projectListForFeed: [],
         selectedProjectForFeedMore: {
         },
-        feedProjectDetailsList: []
+        feedProjectDetailsList: [],
+        projectStudentDetails: {
+            "uuid": "",
+            "username": "",
+            "rollno": "",
+            "password": "",
+            "email": ""
+        }
     },
     reducers: {
         setSelectedProject: (state, action) => {
@@ -228,6 +275,65 @@ const projectSlice = createSlice({
             }
         });
         builder.addCase(getProjectDetailsFeed.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
+
+
+        builder.addCase(projectSearchByTitle.pending, (state) => {
+            state.projectLoader = true;
+
+        });
+        builder.addCase(projectSearchByTitle.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectListForFeed = action.payload.result.data;
+            }
+        });
+        builder.addCase(projectSearchByTitle.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
+
+        builder.addCase(projectSearchByDomain.pending, (state) => {
+            state.projectLoader = true;
+
+        });
+        builder.addCase(projectSearchByDomain.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectListForFeed = action.payload.result.data;
+            }
+        });
+        builder.addCase(projectSearchByDomain.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
+
+
+        builder.addCase(projectSearchByYear.pending, (state) => {
+            state.projectLoader = true;
+
+        });
+        builder.addCase(projectSearchByYear.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectListForFeed = action.payload.result.data;
+            }
+        });
+        builder.addCase(projectSearchByYear.rejected, (state, action) => {
+            state.projectLoader = false;
+        });
+
+
+        builder.addCase(getProjectStudentDetails.pending, (state) => {
+            state.projectLoader = true;
+
+        });
+        builder.addCase(getProjectStudentDetails.fulfilled, (state, action) => {
+            state.projectLoader = false;
+            if (action.payload.result.status == 200) {
+                state.projectStudentDetails = action.payload.result.data;
+            }
+        });
+        builder.addCase(getProjectStudentDetails.rejected, (state, action) => {
             state.projectLoader = false;
         });
     }
